@@ -18,4 +18,23 @@ jobs:
                 go-version-file: ./src/go.mod
             - name: Run Unit Test
               working-directory: ./src
-              run: go test ./...
+              run: go test ./...          
+    code-coverage:
+        name: Code Coverage
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+              name: Checkout
+            - uses: actions/setup-go@v3
+              name: Setup Go environment
+              with:
+                go-version-file: ./src/go.mod
+            - name: Run Code Coverage checking
+              working-directory: ./src
+              run: go test -coverprofile coverage.out ./...
+            - name: Reformat coverage report
+              working-directory: ./src
+              run: go tool cover -func coverage.out -o coverage.txt
+            - name: Print out report
+              working-directory: ./src
+              run: cat coverage.txt
